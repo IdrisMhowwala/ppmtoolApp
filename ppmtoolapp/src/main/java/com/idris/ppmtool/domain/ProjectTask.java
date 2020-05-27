@@ -23,7 +23,7 @@ public class ProjectTask {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(updatable = false)
+	@Column(updatable = false, unique = true)
 	private String projectSequence;
 	@NotBlank(message = "Please Include A project summary")
 	private String summary;
@@ -47,7 +47,7 @@ public class ProjectTask {
 	}
 
 	@Column(updatable = false)
-	private String projectIdentifer;
+	private String projectIdentifier;
 	private Date created_At;
 	private Date updated_At;
 
@@ -112,12 +112,12 @@ public class ProjectTask {
 		this.dueDate = dueDate;
 	}
 
-	public String getProjectIdentifer() {
-		return projectIdentifer;
+	public String getProjectIdentifier() {
+		return projectIdentifier;
 	}
 
-	public void setProjectIdentifer(String projectIdentifer) {
-		this.projectIdentifer = projectIdentifer;
+	public void setProjectIdentifier(String projectIdentifier) {
+		this.projectIdentifier = projectIdentifier;
 	}
 
 	public Date getCreated_At() {
@@ -150,7 +150,7 @@ public class ProjectTask {
 	public String toString() {
 		return "ProjectTask [id=" + id + ", projectSequence=" + projectSequence + ", summary=" + summary
 				+ ", acceptanceCriteria=" + acceptanceCriteria + ", status=" + status + ", priority=" + priority
-				+ ", dueDate=" + dueDate + ", projectIdentifer=" + projectIdentifer + ", created_At=" + created_At
+				+ ", dueDate=" + dueDate + ", projectIdentifier=" + projectIdentifier + ", created_At=" + created_At
 				+ ", updated_At=" + updated_At + "]";
 	}
 
