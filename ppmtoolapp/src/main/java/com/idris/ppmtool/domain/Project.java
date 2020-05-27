@@ -2,11 +2,14 @@ package com.idris.ppmtool.domain;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.validation.constraints.NotBlank;
@@ -21,14 +24,25 @@ public class Project {
 		super();
 	}
 
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "project")
+	private Backlog backlog;
+
+	public Backlog getBacklog() {
+		return backlog;
+	}
+
+	public void setBacklog(Backlog backlog) {
+		this.backlog = backlog;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@NotBlank(message = "Project Name is Required")
 	private String projectName;
 	@NotBlank(message = "Project Identifier is Required")
-	@Size(min = 4,max = 5,message = "It should be between 4 to 5 characters")
-	@Column(updatable = false,unique = true)
+	@Size(min = 4, max = 5, message = "It should be between 4 to 5 characters")
+	@Column(updatable = false, unique = true)
 	private String projectIdentifier;
 	@NotBlank(message = "Description is Required")
 	private String description;
@@ -40,8 +54,6 @@ public class Project {
 	private Date createdAt;
 	@JsonFormat(pattern = "dd-MM-yyyy")
 	private Date updatedAt;
-	
-	
 
 	public Date getCreatedAt() {
 		return createdAt;
@@ -108,14 +120,12 @@ public class Project {
 	}
 
 	@PrePersist
-	public void onCreate()
-	{
-		this.createdAt=new Date();
+	public void onCreate() {
+		this.createdAt = new Date();
 	}
 
 	@PreUpdate
-	public void  onUpdate()
-	{
-		this.updatedAt=new Date();
+	public void onUpdate() {
+		this.updatedAt = new Date();
 	}
 }

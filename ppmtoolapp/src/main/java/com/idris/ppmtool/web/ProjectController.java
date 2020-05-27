@@ -28,42 +28,38 @@ import com.idris.ppmtool.service.ProjectService;
 @RequestMapping("/api/project")
 @CrossOrigin
 public class ProjectController {
-	
+
 	@Autowired
 	private ProjectService projectService;
-	
+
 	@Autowired
 	private MapValidationErrorService mapValidationErrorService;
-	
+
 	@PostMapping("")
-	public ResponseEntity<?> saveProject(@Valid @RequestBody Project project, BindingResult result){
-		ResponseEntity<?> errorMap=mapValidationErrorService.mapValidationError(result);
-		if(errorMap!=null)
-		{
+	public ResponseEntity<?> saveProject(@Valid @RequestBody Project project, BindingResult result) {
+		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
+		if (errorMap != null) {
 			return errorMap;
 		}
-		Project pro=projectService.saveOrUpdate(project);
-		return new ResponseEntity<Project>(pro,HttpStatus.CREATED);
+		Project pro = projectService.saveOrUpdate(project);
+		return new ResponseEntity<Project>(pro, HttpStatus.CREATED);
 	}
 
 	@GetMapping("/{projectId}")
-	public ResponseEntity<?> getProjectByProjectIdentifier(@PathVariable String projectId)
-	{
-		Project project=projectService.findProjectByIdentifier(projectId);
-		return new ResponseEntity<Project>(project,HttpStatus.OK);
+	public ResponseEntity<?> getProjectByProjectIdentifier(@PathVariable String projectId) {
+		Project project = projectService.findProjectByIdentifier(projectId);
+		return new ResponseEntity<Project>(project, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/all")
-	public Iterable<Project> getAllProjects(){
+	public Iterable<Project> getAllProjects() {
 		return projectService.findAllProjects();
 	}
-	
+
 	@DeleteMapping("/{projectId}")
-	public ResponseEntity<?> deleteProject(@PathVariable String projectId)
-	{
+	public ResponseEntity<?> deleteProject(@PathVariable String projectId) {
 		projectService.deleteProjectByIdentifier(projectId);
-		return new ResponseEntity<String>("Project with Id: "+projectId+" is deleted",HttpStatus.OK);
+		return new ResponseEntity<String>("Project with Id: " + projectId + " is deleted", HttpStatus.OK);
 	}
-	
 
 }
