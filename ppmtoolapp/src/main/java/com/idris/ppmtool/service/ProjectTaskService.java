@@ -1,5 +1,7 @@
 package com.idris.ppmtool.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,8 +47,8 @@ public class ProjectTaskService {
 
 			// setting default priority and status
 
-			if (projectTask.getPriority() == null) {
-				projectTask.setPriority(3);
+			if (projectTask.getPriority() == null || projectTask.getPriority()==0) {
+				projectTask.setPriority(3);   //low priority
 
 			}
 			if (projectTask.getStatus() == "" || projectTask.getStatus() == null) {
@@ -70,7 +72,41 @@ public class ProjectTaskService {
 	}
 	
 	public ProjectTask findPTByProjectSequence(String backlog_id,String pt_id) {
-		return projectTaskRepository.findByProjectSequence(pt_id);
+		//make sure that backlog id exist
+		Backlog backlog=backlogRepository.findByProjectIdentifier(backlog_id);
+		if(backlog==null) {
+			throw new ProjectNotFoundException("Project not Found for id: "+backlog_id);
+		}
+		//make sure that project task id exists
+		ProjectTask projectTask=projectTaskRepository.findByProjectSequence(pt_id);
+		if(projectTask==null) {
+			throw new ProjectNotFoundException("Project task with id: "+pt_id+" does not exist");
+		}
+		//make sure backlog id and project identifier is same
+		if(!projectTask.getProjectIdentifier().equals(backlog_id)) {
+			throw new ProjectNotFoundException("Backlog id: "+backlog_id+" does not match with project"
+					+ " Identifier: "+projectTask.getProjectIdentifier());
+		}
+		return projectTask;
+	}
+	public ProjectTask updateByProjectSequence(ProjectTask updatedTask, String backlog_id, String pt_id) {
+		//find the existing project task
+		ProjectTask projectTask=findPTByProjectSequence(backlog_id, pt_id);
+		//replace project task with updated task
+		projectTask=updatedTask;
+		
+		return projectTaskRepository.save(projectTask);
+	}
+	
+	public void deletePTByProjectSequence(String backlog_id,String pt_id) {
+		ProjectTask projectTask=findPTByProjectSequence(backlog_id, pt_id);
+		
+		Backlog backlog=projectTask.getBacklog();
+		List<ProjectTask> pts=backlog.getProjectTasks();
+		pts.remove(projectTask);
+		backlogRepository.save(backlog);
+		projectTaskRepository.delete(projectTask);
+		
 	}
 
 }
